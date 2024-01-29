@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  hello-world-api:
+    image: dotnet
+    container_name: "dotnet-api"
+    expose:
+      - "80"
+    networks:
+      - web
+
+  nginx:
+    image: nginx:latest
+    container_name: "nginx"
+    ports:
+      - "443:443"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+      - "./ssl:/etc/nginx/ssl"
+      - "./entrypoint.sh:/docker-entrypoint.d/entrypoint.sh"
+    networks:
+      - web
+    depends_on:
+      - hello-world-api
+
+networks:
+  web:
+    driver: bridge
